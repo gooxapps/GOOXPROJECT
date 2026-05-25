@@ -110,8 +110,8 @@ const PreviewPage = () => {
 
       {/* Preview area — fixed height, never scrolls */}
       <div
-        className="relative bg-gradient-to-b from-background to-muted/20"
-        style={{ height: 'calc(100vh - 112px)', overflow: 'hidden' }}
+        className="relative bg-gradient-to-b from-background to-muted/20 flex-1"
+        style={{ height: 'calc(100vh - 112px)', overflow: 'clip' }}
       >
         {/* Ambient glows (desktop only) */}
         <div className="hidden md:block absolute inset-0 overflow-hidden pointer-events-none">
@@ -120,7 +120,7 @@ const PreviewPage = () => {
         </div>
 
         {/* Mockup fills remaining space */}
-        <div className="relative z-10 w-full h-full flex items-center justify-center md:px-4 md:py-4">
+        <div className="relative z-10 w-full h-full flex items-center justify-center p-4">
           <DeviceMockup project={project} />
         </div>
       </div>

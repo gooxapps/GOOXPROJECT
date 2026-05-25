@@ -30,15 +30,25 @@ const DeviceMockup = ({ project, className = '' }: DeviceMockupProps) => {
           </div>
 
           {/* Phone chassis — scale down to fit viewport height */}
+          {/* Wrapper shrinks the phone to fit available height, scaling from center */}
           <div
-            className="relative select-none origin-top"
+            className="relative select-none"
             style={{
               width: '375px',
               height: '780px',
               transform: 'scale(var(--phone-scale, 1))',
-              '--phone-scale': 'min(1, calc((100vh - 200px) / 780px))',
+              transformOrigin: 'center center',
+              flexShrink: 0,
             } as React.CSSProperties}
           >
+            <style>{`
+              :root {
+                --phone-scale: min(1, min(
+                  calc((100vw - 80px) / 375),
+                  calc((100vh - 180px) / 780)
+                ));
+              }
+            `}</style>
           {/* === LEFT BUTTONS === */}
           {/* Silent switch */}
           <div
@@ -245,11 +255,13 @@ const DeviceMockup = ({ project, className = '' }: DeviceMockupProps) => {
           <div className="w-[500px] h-[700px] bg-primary/8 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative origin-top" style={{
+        <div className="relative" style={{
           width: '600px',
           height: '800px',
           transform: 'scale(var(--tablet-scale, 1))',
-          '--tablet-scale': 'min(1, calc((100vh - 200px) / 800px))',
+          transformOrigin: 'center center',
+          flexShrink: 0,
+          '--tablet-scale': 'min(1, min(calc((100vw - 80px) / 600), calc((100vh - 180px) / 800)))',
         } as React.CSSProperties}>
           {/* Power button */}
           <div
