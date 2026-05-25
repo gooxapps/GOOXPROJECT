@@ -8,20 +8,37 @@ interface DeviceMockupProps {
 const DeviceMockup = ({ project, className = '' }: DeviceMockupProps) => {
   if (project.deviceType === 'mobile') {
     return (
-      <div className={`relative flex items-center justify-center ${className}`}>
-        {/* Outer glow ambient light */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-64 h-[580px] bg-primary/10 rounded-full blur-3xl" />
+      <>
+        {/* === MOBILE SCREEN: show real full-screen iframe on small screens === */}
+        <div className="md:hidden w-full h-full relative">
+          <iframe
+            src={project.url}
+            title={project.title}
+            className="w-full h-full border-0 block"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-pointer-lock"
+            loading="lazy"
+          />
         </div>
 
-        {/* Phone chassis */}
-        <div
-          className="relative select-none"
-          style={{
-            width: '375px',
-            height: '780px',
-          }}
+        {/* === DESKTOP/TABLET SCREEN: show phone emulator === */}
+        <div className={`hidden md:flex relative items-center justify-center w-full h-full ${className}`}
+          style={{ minHeight: 0 }}
         >
+          {/* Outer glow ambient light */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-64 h-[580px] bg-primary/10 rounded-full blur-3xl" />
+          </div>
+
+          {/* Phone chassis — scale down to fit viewport height */}
+          <div
+            className="relative select-none origin-top"
+            style={{
+              width: '375px',
+              height: '780px',
+              transform: 'scale(var(--phone-scale, 1))',
+              '--phone-scale': 'min(1, calc((100vh - 200px) / 780px))',
+            } as React.CSSProperties}
+          >
           {/* === LEFT BUTTONS === */}
           {/* Silent switch */}
           <div
@@ -213,19 +230,27 @@ const DeviceMockup = ({ project, className = '' }: DeviceMockupProps) => {
 
             </div>{/* end screen area */}
           </div>{/* end phone body */}
-        </div>
-      </div>
+        </div>{/* end chassis */}
+        </div>{/* end desktop wrapper */}
+      </>
     );
   }
 
   if (project.deviceType === 'tablet') {
     return (
-      <div className={`relative flex items-center justify-center ${className}`}>
+      <div className={`relative flex items-center justify-center w-full h-full ${className}`}
+        style={{ minHeight: 0 }}
+      >
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-[500px] h-[700px] bg-primary/8 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative" style={{ width: '600px', height: '800px' }}>
+        <div className="relative origin-top" style={{
+          width: '600px',
+          height: '800px',
+          transform: 'scale(var(--tablet-scale, 1))',
+          '--tablet-scale': 'min(1, calc((100vh - 200px) / 800px))',
+        } as React.CSSProperties}>
           {/* Power button */}
           <div
             className="absolute rounded-r-sm"
@@ -309,9 +334,9 @@ const DeviceMockup = ({ project, className = '' }: DeviceMockupProps) => {
 
   // Desktop / Browser frame
   return (
-    <div className={`relative flex items-center justify-center ${className}`}>
-      <div className="relative desktop-frame rounded-xl overflow-hidden"
-        style={{ width: '100%', maxWidth: '960px', aspectRatio: '16/10' }}>
+    <div className={`relative flex items-center justify-center w-full h-full ${className}`}>
+      <div className="relative desktop-frame rounded-xl overflow-hidden w-full"
+        style={{ maxWidth: '960px', height: '100%', maxHeight: 'calc(100vh - 200px)', aspectRatio: '16/10' }}>
         {/* Browser chrome */}
         <div className="flex items-center gap-2 px-4 py-2.5 bg-black/50 border-b border-white/10">
           <div className="flex gap-1.5">
